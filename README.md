@@ -56,10 +56,10 @@ secret.set_fallback_env(env)
 # will try and access `SOME_API_KEY` from environment file if not found in secret
 SOME_API_KEY = secret.get("SOME_API_KEY", allow_env_fallback=True)
 
-# will try and access `SOME_API_KEY` from environment file if not found in secret
+# will try and access `ANOTHER_API_KEY` from environment file if not found in secret
 # if not in the environment file, then use the `default` value
 ANOTHER_API_KEY = secret.get("ANOTHER_API_KEY", allow_env_fallback=True, default="a-sensible-default")
 ```
 
-Ideally, you should combine both approaches and read the secret name and the corresponding region from an env file to avoid hardcoding this in you settings.
+Ideally, you should combine both approaches and read the secret name and the corresponding region from an env file to avoid hardcoding this in your settings.
 
