@@ -36,7 +36,7 @@ git pull --recurse-submodules
 Simple example:
 
 ```python
-from .secrets_management.secrets_manager import SecretsManager  # adjust path depending on where you've saved this
+from .secrets_management import SecretsManager  # adjust the path depending on where you've saved this repo
 
 secrets_manager = SecretsManager(region_name="eu-west-2")
 secret = secrets_manager.retrieve_secret("name/of/secret")
