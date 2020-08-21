@@ -1,10 +1,12 @@
 import json
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import boto3
 import environ
 from aws_secretsmanager_caching import SecretCache, SecretCacheConfig
 from botocore.exceptions import ClientError
+
+from .util import bool_converter
 
 
 class Secret:
@@ -16,9 +18,29 @@ class Secret:
         self,
         key: str,
         allow_env_fallback: bool = False,
-        default: Optional[str] = None
-    ) -> Optional[str]:
-        """Retrieve a specific value from the secret (with optional fallback retrieval from .env file)"""
+        default: Optional[Any] = None,
+        cast_type: Optional[str] = None,
+    ) -> Any:
+        """
+        Retrieve a specific value from the secret (with optional fallback retrieval from .env file)
+
+        Supports casting to int, float or bool
+        """
+
+        value = self._get(key, allow_env_fallback, default)
+
+        if cast_type:
+            value = self._cast(value, cast_type)
+
+        return value
+
+    def _get(
+        self,
+        key: str,
+        allow_env_fallback: bool,
+        default: Any,
+    ) -> Any:
+
         try:
             return self.secret[key]
         except KeyError:
@@ -34,7 +56,22 @@ class Secret:
                 return default
             raise
 
+    def _cast(self, value: str, type_: str):
+        """Cast a string value to a given type"""
+
+        cast_map = {
+            'int': int,
+            'float': float,
+            'bool': bool_converter,
+        }
+
+        if type_ not in cast_map.keys():
+            raise ValueError(f'`cast` kwarg must be one of {list(cast_map.keys())}')
+
+        return cast_map.get(type_)(value)
+
     def set_fallback_env(self, fallback_env: environ.Env):
+        """Set a fallback environment object for retrieving missing keys"""
         self.fallback_env = fallback_env
         return self
 
