@@ -71,6 +71,7 @@ class Secret:
         return cast_map.get(type_)(value)
 
     def set_fallback_env(self, fallback_env: environ.Env):
+        """Set a fallback environment object for retrieving missing keys"""
         self.fallback_env = fallback_env
         return self
 
