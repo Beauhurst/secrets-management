@@ -18,8 +18,8 @@ class Secret:
         self,
         key: str,
         allow_env_fallback: bool = False,
-        default: Any = None,
-        cast_type: str = None,
+        default: Optional[Any] = None,
+        cast_type: Optional[str] = None,
     ) -> Any:
         """
         Retrieve a specific value from the secret (with optional fallback retrieval from .env file)
