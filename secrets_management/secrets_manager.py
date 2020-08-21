@@ -34,12 +34,7 @@ class Secret:
 
         return value
 
-    def _get(
-        self,
-        key: str,
-        allow_env_fallback: bool,
-        default: Any,
-    ) -> Any:
+    def _get(self, key: str, allow_env_fallback: bool, default: Any) -> Any:
 
         try:
             return self.secret[key]
@@ -51,7 +46,7 @@ class Secret:
                     else:
                         return self.fallback_env(key)
                 except TypeError:
-                    raise AttributeError('`fallback_env` not set for this secret')
+                    raise AttributeError("`fallback_env` not set for this secret")
             if default is not None:
                 return default
             raise
@@ -60,13 +55,13 @@ class Secret:
         """Cast a string value to a given type"""
 
         cast_map = {
-            'int': int,
-            'float': float,
-            'bool': bool_converter,
+            "int": int,
+            "float": float,
+            "bool": bool_converter,
         }
 
         if type_ not in cast_map.keys():
-            raise ValueError(f'`cast` kwarg must be one of {list(cast_map.keys())}')
+            raise ValueError(f"`cast` kwarg must be one of {list(cast_map.keys())}")
 
         return cast_map.get(type_)(value)
 
@@ -77,13 +72,9 @@ class Secret:
 
 
 class SecretsManager:
-
     def __init__(self, region_name: str):
         session = boto3.session.Session()
-        client = session.client(
-            service_name='secretsmanager',
-            region_name=region_name,
-        )
+        client = session.client(service_name="secretsmanager", region_name=region_name,)
         cache_config = SecretCacheConfig()
         self.cache = SecretCache(config=cache_config, client=client)
 
@@ -97,18 +88,18 @@ class SecretsManager:
         try:
             return Secret(json.loads(self.cache.get_secret_string(secret_name)))
         except ClientError as e:
-            if e.response['Error']['Code'] == 'DecryptionFailureException':
+            if e.response["Error"]["Code"] == "DecryptionFailureException":
                 # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
                 raise e
-            elif e.response['Error']['Code'] == 'InternalServiceErrorException':
+            elif e.response["Error"]["Code"] == "InternalServiceErrorException":
                 # An error occurred on the server side.
                 raise e
-            elif e.response['Error']['Code'] == 'InvalidParameterException':
+            elif e.response["Error"]["Code"] == "InvalidParameterException":
                 # You provided an invalid value for a parameter.
                 raise e
-            elif e.response['Error']['Code'] == 'InvalidRequestException':
+            elif e.response["Error"]["Code"] == "InvalidRequestException":
                 # You provided a parameter value that is not valid for the current state of the resource.
                 raise e
-            elif e.response['Error']['Code'] == 'ResourceNotFoundException':
+            elif e.response["Error"]["Code"] == "ResourceNotFoundException":
                 # We can't find the resource that you asked for.
                 raise e
