@@ -74,7 +74,7 @@ class Secret:
 class SecretsManager:
     def __init__(self, region_name: str):
         session = boto3.session.Session()
-        client = session.client(service_name="secretsmanager", region_name=region_name,)
+        client = session.client(service_name="secretsmanager", region_name=region_name)
         cache_config = SecretCacheConfig()
         self.cache = SecretCache(config=cache_config, client=client)
 
