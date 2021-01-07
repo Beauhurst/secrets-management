@@ -84,22 +84,4 @@ class SecretsManager:
 
         Assumes that we are just storing text, not binary data (for now)
         """
-
-        try:
-            return Secret(json.loads(self.cache.get_secret_string(secret_name)))
-        except ClientError as e:
-            if e.response["Error"]["Code"] == "DecryptionFailureException":
-                # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
-                raise e
-            elif e.response["Error"]["Code"] == "InternalServiceErrorException":
-                # An error occurred on the server side.
-                raise e
-            elif e.response["Error"]["Code"] == "InvalidParameterException":
-                # You provided an invalid value for a parameter.
-                raise e
-            elif e.response["Error"]["Code"] == "InvalidRequestException":
-                # You provided a parameter value that is not valid for the current state of the resource.
-                raise e
-            elif e.response["Error"]["Code"] == "ResourceNotFoundException":
-                # We can't find the resource that you asked for.
-                raise e
+        return Secret(json.loads(self.cache.get_secret_string(secret_name)))
