@@ -8,6 +8,8 @@ from botocore.exceptions import ClientError
 
 from .util import bool_converter
 
+_not_set = object()
+
 
 class Secret:
     def __init__(self, secret: Dict[str, str], fallback_env: Optional[environ.Env] = None):
@@ -18,7 +20,7 @@ class Secret:
         self,
         key: str,
         allow_env_fallback: bool = False,
-        default: Optional[Any] = None,
+        default: Any = _not_set,
         cast_type: Optional[str] = None,
     ) -> Any:
         """
@@ -41,15 +43,15 @@ class Secret:
         except KeyError:
             if allow_env_fallback:
                 try:
-                    if default is not None:
-                        return self.fallback_env(key, default=default)
-                    else:
+                    if default is _not_set:
                         return self.fallback_env(key)
+                    else:
+                        return self.fallback_env(key, default=default)
                 except TypeError:
                     raise AttributeError("`fallback_env` not set for this secret")
-            if default is not None:
-                return default
-            raise
+            elif default is _not_set:
+                raise
+            return default
 
     def _cast(self, value: str, type_: str):
         """Cast a string value to a given type"""
