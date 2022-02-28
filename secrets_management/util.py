@@ -1,10 +1,11 @@
-from distutils.util import strtobool
-
-
-def bool_converter(val):
+def bool_converter(value: Union[str, int, bool]) -> bool:
+    """Helper function to convert some common "yes"/"no" command line inputs into a boolean.
+    This originally extended the (now deprecated) distutils's strtobool function.
     """
-    Convert string representations of True/False to real booleans
+    if value in (True, 1) or str(value).lower() in ("y", "yes", "t", "true", "1", "on"):
+        return True
 
-    See `distutils.util.strtobool` for full list of supported inputs
-    """
-    return bool(strtobool(str(val)))
+    if value in (False, 0) or str(value).lower() in ("n", "no", "f", "false", "0", "off"):
+        return False
+
+    raise ValueError(f"Don't know how to convert: {value}")
