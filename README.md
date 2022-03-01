@@ -4,15 +4,6 @@ This project can be pip installed into other projects as a Python package to hav
 
 ## Adding into a project
 
-### Requirements
-
-The project assumes that the parent repo already has access to the following Python packages:
-- [aws-secretsmanager-caching](https://pypi.org/project/aws-secretsmanager-caching/)
-- [boto3](https://pypi.org/project/boto3/)
-- [django-environ](https://pypi.org/project/django-environ/)
-
-### Steps
-
 You can `pip` install it manually via `pip install git+https://github.com/Beauhurst/secrets-management.git`
 
 Or add `git+https://github.com/Beauhurst/secrets-management.git` to your `requirements.txt` file.
