@@ -1,3 +1,6 @@
+from typing import Union
+
+
 def bool_converter(value: Union[str, int, bool]) -> bool:
     """Helper function to convert some common "yes"/"no" command line inputs into a boolean.
     This originally extended the (now deprecated) distutils's strtobool function.
