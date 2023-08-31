@@ -1,3 +1,4 @@
+import datetime as dt
 import json
 from typing import Any, Dict, Optional
 
@@ -78,7 +79,7 @@ class SecretsManager:
         session = boto3.session.Session()
         client = session.client(service_name="secretsmanager", region_name=region_name)
         cache_config = SecretCacheConfig(
-            secret_refresh_interval=int(timedelta(hours=1).total_seconds()),
+            secret_refresh_interval=int(dt.timedelta(hours=1).total_seconds()),
         )
         self.cache = SecretCache(config=cache_config, client=client)
 
