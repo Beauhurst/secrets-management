@@ -77,7 +77,9 @@ class SecretsManager:
     def __init__(self, region_name: str):
         session = boto3.session.Session()
         client = session.client(service_name="secretsmanager", region_name=region_name)
-        cache_config = SecretCacheConfig()
+        cache_config = SecretCacheConfig(
+            secret_refresh_interval=int(timedelta(hours=1).total_seconds()),
+        )
         self.cache = SecretCache(config=cache_config, client=client)
 
     def retrieve_secret(self, secret_name: str) -> Optional[Secret]:
