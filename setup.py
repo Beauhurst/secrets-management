@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="secrets-management",
-    version="0.0.9",
+    version="0.1.0",
     author="Beauhurst",
     author_email="noreply@beauhurst.com",
     description="Helper library for interacting with AWS Secrets Manager",
