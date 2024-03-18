@@ -19,5 +19,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.8",
-    install_requires=["aws-secretsmanager-caching", "boto3", "django-environ"],
+    install_requires=[
+        "boto3",
+        "django-environ",
+    ],
 )
