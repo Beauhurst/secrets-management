@@ -1,10 +1,8 @@
-import datetime as dt
 import json
 from typing import Any, Dict, Optional
 
 import boto3
 import environ
-from aws_secretsmanager_caching import SecretCache, SecretCacheConfig
 from botocore.exceptions import ClientError
 
 from .util import bool_converter
@@ -76,17 +74,14 @@ class Secret:
 
 class SecretsManager:
     def __init__(self, region_name: str):
-        session = boto3.session.Session()
-        client = session.client(service_name="secretsmanager", region_name=region_name)
-        cache_config = SecretCacheConfig(
-            secret_refresh_interval=int(dt.timedelta(hours=1).total_seconds()),
-        )
-        self.cache = SecretCache(config=cache_config, client=client)
+        self.region_name = region_name
 
-    def retrieve_secret(self, secret_name: str) -> Optional[Secret]:
+    def retrieve_secret(self, secret_name: str) -> Secret:
         """
-        Retrieve a secret from the cache (or fetch from AWS if not already cached)
+        Retrieve a secret from AWS Secrets Manager
 
         Assumes that we are just storing text, not binary data (for now)
         """
-        return Secret(json.loads(self.cache.get_secret_string(secret_name)))
+        client = boto3.client("secretsmanager", region_name=self.region_name)
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+        return Secret(json.loads(get_secret_value_response["SecretString"]))
