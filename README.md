@@ -53,3 +53,12 @@ SOME_SECRET_NUMBER = secret.get("SOME_SECRET_NUMBER", cast_type="int")
 ```
 Currently supported values are `int`, `float` and `bool`.
 
+## Running the tests
+
+Install the package with its test dependencies and run `pytest`:
+
+```bash
+pip install -e ".[test]"
+pytest
+```
+

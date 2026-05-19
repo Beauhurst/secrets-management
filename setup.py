@@ -23,4 +23,10 @@ setuptools.setup(
         "boto3",
         "django-environ",
     ],
+    extras_require={
+        "test": [
+            "pytest",
+            "moto",
+        ],
+    },
 )
