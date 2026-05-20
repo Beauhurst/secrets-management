@@ -53,12 +53,23 @@ SOME_SECRET_NUMBER = secret.get("SOME_SECRET_NUMBER", cast_type="int")
 ```
 Currently supported values are `int`, `float` and `bool`.
 
-## Running the tests
+## Development
 
-Install the package with its test dependencies and run `pytest`:
+For local development, install the package in editable mode together with the test dependencies:
 
 ```bash
 pip install -e ".[test]"
+```
+
+### Running the test suite
+
+Run the full test suite locally with:
+
+```bash
 pytest
 ```
+
+### Continuous integration
+
+The test suite also runs automatically in GitHub Actions for pushes and pull requests via `.github/workflows/tests.yml`.
 
