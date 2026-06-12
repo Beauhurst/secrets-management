@@ -1,6 +1,6 @@
 [build-system]
-build-backend = "setuptools.build_meta"
 requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
 [project]
 authors = [{ name = "Beauhurst", email = "noreply@beauhurst.com" }]
