@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+authors = [{ name = "Beauhurst", email = "noreply@beauhurst.com" }]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "boto3",
+    "django-environ",
+]
+description = "Helper library for interacting with AWS Secrets Manager"
+name = "secrets-management"
+readme = "README.md"
+requires-python = ">=3.10"
+version = "0.1.0"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "moto",
+]
+
+[project.urls]
+Homepage = "https://github.com/beauhurst/secrets-management"
+
+[tool.setuptools.packages.find]
+where = ["."]
