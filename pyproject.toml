@@ -17,7 +17,7 @@ description = "Helper library for interacting with AWS Secrets Manager"
 name = "secrets-management"
 readme = "README.md"
 requires-python = ">=3.10"
-version = "0.1.0"
+version = "1.0.0"
 
 [project.optional-dependencies]
 test = [
