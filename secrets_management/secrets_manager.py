@@ -3,7 +3,6 @@ from typing import Any, Dict, Optional
 
 import boto3
 import environ
-from botocore.exceptions import ClientError
 
 from .util import bool_converter
 
@@ -41,13 +40,11 @@ class Secret:
             return self.secret[key]
         except KeyError:
             if allow_env_fallback:
-                try:
-                    if default is _not_set:
-                        return self.fallback_env(key)
-                    else:
-                        return self.fallback_env(key, default=default)
-                except TypeError:
+                if self.fallback_env is None:
                     raise AttributeError("`fallback_env` not set for this secret")
+                if default is _not_set:
+                    return self.fallback_env(key)
+                return self.fallback_env(key, default=default)
             elif default is _not_set:
                 raise
             return default
@@ -84,4 +81,10 @@ class SecretsManager:
         """
         client = boto3.client("secretsmanager", region_name=self.region_name)
         get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+
+        if "SecretString" not in get_secret_value_response:
+            raise ValueError(
+                f"Secret '{secret_name}' does not contain a SecretString (binary secrets are not supported)"
+            )
+
         return Secret(json.loads(get_secret_value_response["SecretString"]))

@@ -18,9 +18,15 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     install_requires=[
         "boto3",
         "django-environ",
     ],
+    extras_require={
+        "test": [
+            "pytest",
+            "moto",
+        ],
+    },
 )
