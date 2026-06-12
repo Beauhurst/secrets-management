@@ -47,11 +47,31 @@ Ideally, you should combine both approaches and read the secret name and the cor
 
 ### Casting
 
-If you want to store a data type other than a string you can make use of the `cast_type` kwarg:
+If you want to store a data type other than a string you can make use of the `cast_type` kwarg by passing any callable. The callable is applied to the retrieved value:
+
 ```python
-SOME_SECRET_NUMBER = secret.get("SOME_SECRET_NUMBER", cast_type="int")
+SOME_SECRET_NUMBER = secret.get("SOME_SECRET_NUMBER", cast_type=int)
 ```
-Currently supported values are `int`, `float` and `bool`.
+
+This works with any callable, so you can perform arbitrary conversions, for example parsing JSON or dates:
+
+```python
+import json
+from datetime import date
+
+CONFIG = secret.get("CONFIG", cast_type=json.loads)
+START_DATE = secret.get("START_DATE", cast_type=date.fromisoformat)
+```
+
+For boolean values, a helper that understands common `"yes"`/`"no"`/`"on"`/`"off"` style inputs is provided:
+
+```python
+from secrets_management.util import bool_converter
+
+DEBUG = secret.get("DEBUG", cast_type=bool_converter)
+```
+
+> **Deprecated:** passing a string (`"int"`, `"float"` or `"bool"`) is still supported for backwards compatibility but is deprecated and will emit a `DeprecationWarning`. Pass the corresponding callable instead (`int`, `float`, or `bool_converter`).
 
 ## Development
 

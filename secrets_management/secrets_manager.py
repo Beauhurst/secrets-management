@@ -1,5 +1,6 @@
 import json
-from typing import Any, Dict, Optional
+import warnings
+from typing import Any, Callable, Dict, Optional, Union
 
 import boto3
 import environ
@@ -19,12 +20,16 @@ class Secret:
         key: str,
         allow_env_fallback: bool = False,
         default: Any = _not_set,
-        cast_type: Optional[str] = None,
+        cast_type: Optional[Union[str, Callable[[Any], Any]]] = None,
     ) -> Any:
         """
         Retrieve a specific value from the secret (with optional fallback retrieval from .env file)
 
-        Supports casting to int, float or bool
+        ``cast_type`` may be any callable (e.g. the builtin ``int``, ``json.loads`` or a
+        custom function) which will be applied to the retrieved value.
+
+        Passing a string (one of ``"int"``, ``"float"`` or ``"bool"``) is also supported for
+        backwards compatibility, but is deprecated; pass the corresponding callable instead.
         """
 
         value = self._get(key, allow_env_fallback, default)
@@ -49,8 +54,11 @@ class Secret:
                 raise
             return default
 
-    def _cast(self, value: str, type_: str):
-        """Cast a string value to a given type"""
+    def _cast(self, value: str, cast_type: Union[str, Callable[[Any], Any]]):
+        """Cast a value using a callable, or a deprecated string alias."""
+
+        if callable(cast_type):
+            return cast_type(value)
 
         cast_map = {
             "int": int,
@@ -58,10 +66,19 @@ class Secret:
             "bool": bool_converter,
         }
 
-        if type_ not in cast_map.keys():
-            raise ValueError(f"`cast` kwarg must be one of {list(cast_map.keys())}")
+        if cast_type not in cast_map.keys():
+            raise ValueError(
+                f"`cast_type` must be a callable or one of {list(cast_map.keys())}"
+            )
 
-        return cast_map.get(type_)(value)
+        warnings.warn(
+            "Passing a string to `cast_type` is deprecated; pass a callable instead "
+            f"(e.g. `cast_type={cast_map[cast_type].__name__}`).",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+
+        return cast_map[cast_type](value)
 
     def set_fallback_env(self, fallback_env: environ.Env):
         """Set a fallback environment object for retrieving missing keys"""
