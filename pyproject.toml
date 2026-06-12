@@ -19,14 +19,14 @@ dependencies = [
     "django-environ",
 ]
 
-[project.urls]
-Homepage = "https://github.com/beauhurst/secrets-management"
-
 [project.optional-dependencies]
 test = [
     "pytest",
     "moto",
 ]
+
+[project.urls]
+Homepage = "https://github.com/beauhurst/secrets-management"
 
 [tool.setuptools.packages.find]
 where = ["."]
